@@ -12,3 +12,5 @@ $ p3d2gmsh.py <input_file> <output_file.msh>
     input file should be 2D p2dfmt format (only tested for that)
     output will be .msh file
 ```
+
+#ignore p3Dgsm file
