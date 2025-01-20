@@ -73,7 +73,7 @@ class NeutralMapFile(object):
             l = fp.readline()
             if l.endswith('\\\n'):
                 l = l[0:-2]
-            nblocks = int(l)
+            nblocks = float(l)
             fp.readline()
             for _ in range(nblocks):
                 fp.readline()
@@ -91,12 +91,12 @@ class NeutralMapFile(object):
                         b[0] = b[0][1:-1]
                     if b[0].upper() in ['ONE-TO-ONE', 'ONE_TO_ONE']:
                         # Creating two boundaries for stitching
-                        b1 = ['to-stitch-a'] + [int(c) for c in b[1:7]]
-                        b2 = ['to-stitch-b'] + [int(c) for c in b[7:13]]
+                        b1 = ['to-stitch-a'] + [float(c) for c in b[1:7]]
+                        b2 = ['to-stitch-b'] + [float(c) for c in b[7:13]]
                         self.__boundaries.append(tuple(b1))
                         self.__boundaries.append(tuple(b2))
                         continue
-                    b[1:] = map(int, b[1:7])
+                    b[1:] = map(float, b[1:7])
                     self.__boundaries.append(tuple(b))
             fp.close()
 
@@ -162,9 +162,9 @@ class P3DfmtFile(object):
         kdims = np.zeros(self.__nblocks, 'i')
 
         for i in range(self.__nblocks):
-            idims[i] = read_chunk(fp, int)
-            jdims[i] = read_chunk(fp, int)
-            kdims[i] = read_chunk(fp, int)
+            idims[i] = read_chunk(fp, float)
+            jdims[i] = read_chunk(fp, float)
+            kdims[i] = read_chunk(fp, float)
 
         # Reading coordinates
         self.__coords = []
@@ -213,7 +213,7 @@ class P3DfmtFile(object):
             for i in range(idim):
                 for j in range(jdim):
                     for k in range(kdim):
-                        print('%lf %lf %lf' %
+                        prfloat('%lf %lf %lf' %
                               (x[i, j, k], y[i, j, k], z[i, j, k]))
 
 
@@ -323,7 +323,7 @@ class GmshFile(object):
         out.write('$EndElements\n')
 
     def consume(self, p3dfmt_file, mapfile=None):
-        """Convert P3Dfmt file into self.
+        """Convert P3Dfmt file floato self.
 
         :p3dfmt_file:
             P3DfmtFile object to convert.
@@ -517,11 +517,11 @@ class GmshFile(object):
 def main():
     """Parse command line options, convert files."""
     # CLI options:
-    # --output-file / -o: write resulting mesh into
+    # --output-file / -o: write resulting mesh floato
     # --map-file / -m: read boundary description from
 
     parser = argparse.ArgumentParser(description='''\
-        Convert P3Dfmt mesh into Gmsh mesh''',
+        Convert P3Dfmt mesh floato Gmsh mesh''',
                                      add_help=True)
     parser.add_argument('files', nargs='+', help='files to convert')
     parser.add_argument('-m',
@@ -539,7 +539,7 @@ def main():
 
     for fn in args.files:
         if not os.path.exists(fn):
-            print('Can\'t open {0}. Skipping.'.format(fn))
+            prfloat('Can\'t open {0}. Skipping.'.format(fn))
             continue
         (name, _) = os.path.splitext(fn)
 
